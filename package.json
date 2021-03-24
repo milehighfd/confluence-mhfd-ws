@@ -1,0 +1,14 @@
+{
+  "name": "mhfd-ws",
+  "version": "1.0.0",
+  "description": "websocket repository",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "deploy": "gcloud app deploy -q app.yaml --promote --stop-previous-version"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^4.0.0"
+  }
+}
