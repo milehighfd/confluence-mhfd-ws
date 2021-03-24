@@ -16,34 +16,24 @@ io.on('connection', (socket) => {
 
 })
 
-const workRequestNs = io.of('work-request');
-const workPlanNs = io.of('work-plan');
+const workspaces = io.of(/.*/);
 
-workRequestNs.on('connection', (socket) => {
-  console.log('Client connected to WorkRequest WebSocket');
+workspaces.on('connection', (socket) => {
+
+  let workspace = socket.nsp;
+
+  console.log(`Client connected to ${socket.nsp.name} WebSocket`);
 
   socket.on('disconnect', () => {
-    console.log('Client disconnected');
+    console.log(`Client disconnected from ${socket.nsp.name}`);
   });
 
   socket.on('update', function (data) {
-    console.log('workRequestNs: data', socket.id, data)
-    workRequestNs.emit('update', data);
-  });
-})
-
-workPlanNs.on('connection', (socket) => {
-  console.log('Client connected to WorkPlan WebSocket');
-
-  socket.on('disconnect', () => {
-    console.log('Client disconnected');
+    console.log(`socket.nsp.name : data`, socket.id, data)
+    workspace.emit('update', data);
   });
 
-  socket.on('update', function (data) {
-    console.log('workPlanNs: data', socket.id, data)
-    workPlanNs.emit('update', data);
-  });
-})
+});
 
 const port = process.env.PORT || '65080';
 
