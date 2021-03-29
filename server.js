@@ -1,5 +1,10 @@
 const app = require('express')();
 const http = require('http').Server(app);
+
+const {
+  updateColumn
+} = require('./pg.service');
+
 const io = require('socket.io')(http, {
   cors: {
     origin: "*",
@@ -28,9 +33,15 @@ workspaces.on('connection', (socket) => {
     console.log(`Client disconnected from ${socket.nsp.name}`);
   });
 
-  socket.on('update', function (data) {
-    console.log(`socket.nsp.name : data`, socket.id, data)
-    workspace.emit('update', data);
+  socket.on('update', function (columns) {
+    columns.forEach((column, i) => {
+      let projects = column.projects;
+      projects.forEach(project => {
+        updateColumn(i, socket.nsp.name.substr(1), project.projectid);
+      })
+    })
+    console.log(`socket.nsp.name : columns`, socket.id, columns)
+    workspace.emit('update', columns);
   });
 
 });
