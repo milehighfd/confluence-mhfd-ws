@@ -2,7 +2,7 @@ const app = require('express')();
 const http = require('http').Server(app);
 
 const {
-  updateColumn
+  saveColumns
 } = require('./pg.service');
 
 const io = require('socket.io')(http, {
@@ -34,12 +34,7 @@ workspaces.on('connection', (socket) => {
   });
 
   socket.on('update', function (columns) {
-    columns.forEach((column, i) => {
-      let projects = column.projects;
-      projects.forEach(project => {
-        updateColumn(i, socket.nsp.name.substr(1), project.projectid);
-      })
-    })
+    saveColumns(socket.nsp.name.substr(1), columns);
     console.log(`socket.nsp.name : columns`, socket.id, columns)
     workspace.emit('update', columns);
   });

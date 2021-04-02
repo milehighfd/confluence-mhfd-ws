@@ -24,11 +24,60 @@ const shouldAbort = err => {
   return !!err
 }
 
-const updateColumn = (column, board_id, projectid) => {
+const saveColumns = (board_id, columns) => {
+  let projects = [];
+  let projectIds = [];
+  columns.forEach((column, columnIdx) => {
+    column.projects.forEach(project => {
+      if (!projectIds.includes(project.project_id)) {
+        projects.push(project);
+        projectIds.push(project.project_id)
+      }
+    })
+  })
+  projects.forEach(p => {
+    updateProject(board_id, p);
+  })
+}
+
+const updateProject = (board_id, project) => {
   client.query('BEGIN', err => {
     if (shouldAbort(err)) return
-    const queryText = 'UPDATE "boardProjects" SET "column"=$1 WHERE board_id = $2 and project_id = $3;'
-    client.query(queryText, [column, board_id, projectid], (err, res) => {
+    const queryText = `
+      UPDATE "boardProjects"
+      SET position0=$3, position1=$4, position2=$5, position3=$6, position4=$7, position5=$8,
+      req1=$9, req2=$10, req3=$11, req4=$12, req5=$13
+      WHERE board_id = $1 and project_id = $2;`
+    let params = [
+      board_id, project.project_id,
+      project.position0,
+      project.position1,
+      project.position2,
+      project.position3,
+      project.position4,
+      project.position5,
+      project.req1,
+      project.req2,
+      project.req3,
+      project.req4,
+      project.req5,
+    ];
+    console.log('params', params);
+    client.query(queryText, [
+      board_id, project.project_id,
+      project.position0,
+      project.position1,
+      project.position2,
+      project.position3,
+      project.position4,
+      project.position5,
+      project.req1,
+      project.req2,
+      project.req3,
+      project.req4,
+      project.req5,
+    ], (err, res) => {
+      console.log('res', res)
       if (shouldAbort(err)) return
       if (shouldAbort(err)) return
       client.query('COMMIT', err => {
@@ -41,5 +90,5 @@ const updateColumn = (column, board_id, projectid) => {
 }
 
 module.exports = {
-  updateColumn
+  saveColumns
 };
