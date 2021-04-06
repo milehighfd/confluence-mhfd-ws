@@ -24,6 +24,31 @@ const shouldAbort = err => {
   return !!err
 }
 
+const saveReqmanager = (board_id, reqmanager) => {
+  client.query('BEGIN', err => {
+    if (shouldAbort(err)) return
+    const queryText = `
+      UPDATE "boards"
+      SET reqmanager1=$2, reqmanager2=$3, reqmanager3=$4, reqmanager4=$5, reqmanager5=$6
+      WHERE _id = $1;`
+    let params = [
+      board_id,
+      ...reqmanager
+    ];
+    console.log('params', params);
+    client.query(queryText, params, (err, res) => {
+      console.log('res', res)
+      if (shouldAbort(err)) return
+      if (shouldAbort(err)) return
+      client.query('COMMIT', err => {
+        if (err) {
+          console.error('Error committing transaction', err.stack)
+        }
+      })
+    })
+  })
+}
+
 const saveColumns = (board_id, columns) => {
   let projects = [];
   let projectIds = [];
@@ -90,5 +115,6 @@ const updateProject = (board_id, project) => {
 }
 
 module.exports = {
-  saveColumns
+  saveColumns,
+  saveReqmanager
 };

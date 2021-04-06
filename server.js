@@ -2,7 +2,8 @@ const app = require('express')();
 const http = require('http').Server(app);
 
 const {
-  saveColumns
+  saveColumns,
+  saveReqmanager
 } = require('./pg.service');
 
 const io = require('socket.io')(http, {
@@ -37,6 +38,12 @@ workspaces.on('connection', (socket) => {
     saveColumns(socket.nsp.name.substr(1), columns);
     console.log(`socket.nsp.name : columns`, socket.id, columns)
     workspace.emit('update', columns);
+  });
+
+  socket.on('reqmanager', function (reqmanager) {
+    saveReqmanager(socket.nsp.name.substr(1), reqmanager);
+    console.log(`socket.nsp.name : reqmanager`, socket.id, reqmanager)
+    workspace.emit('reqmanager', reqmanager);
   });
 
 });
