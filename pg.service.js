@@ -50,18 +50,26 @@ const saveReqmanager = (board_id, reqmanager) => {
 }
 
 const saveColumns = (board_id, columns) => {
-  let projects = [];
-  let projectIds = [];
+  let map = {};
+
   columns.forEach((column, columnIdx) => {
-    column.projects.forEach(project => {
-      if (!projectIds.includes(project.project_id)) {
-        projects.push(project);
-        projectIds.push(project.project_id)
+    column.projects.forEach((project, rowId) => {
+      let pid = project.project_id;
+      if (!map[pid]) {
+        map[pid] = {
+          project_id: project.project_id,
+          req1: project.req1,
+          req2: project.req2,
+          req3: project.req3,
+          req4: project.req4,
+          req5: project.req5
+        }
       }
+      map[pid][`position${columnIdx}`] = rowId;
     })
   })
-  projects.forEach(p => {
-    updateProject(board_id, p);
+  Object.keys(map).forEach(pid => {
+    updateProject(board_id, map[pid]);
   })
 }
 
