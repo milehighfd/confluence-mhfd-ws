@@ -35,9 +35,9 @@ const saveReqmanager = (board_id, reqmanager) => {
       board_id,
       ...reqmanager
     ];
-    console.log('params', params);
+    //console.log('params', params);
     client.query(queryText, params, (err, res) => {
-      console.log('res', res)
+      //console.log('res', res)
       if (shouldAbort(err)) return
       if (shouldAbort(err)) return
       client.query('COMMIT', err => {
@@ -95,7 +95,7 @@ const updateProject = (board_id, project) => {
       project.req4,
       project.req5,
     ];
-    console.log('params', params);
+    //console.log('params', params);
     client.query(queryText, [
       board_id, project.project_id,
       project.position0,
@@ -110,7 +110,7 @@ const updateProject = (board_id, project) => {
       project.req4,
       project.req5,
     ], (err, res) => {
-      console.log('res', res)
+      //console.log('res', res)
       if (shouldAbort(err)) return
       if (shouldAbort(err)) return
       client.query('COMMIT', err => {
