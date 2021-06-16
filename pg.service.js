@@ -29,7 +29,7 @@ const saveReqmanager = (board_id, reqmanager) => {
     if (shouldAbort(err)) return
     const queryText = `
       UPDATE "boards"
-      SET reqmanager1=$2, reqmanager2=$3, reqmanager3=$4, reqmanager4=$5, reqmanager5=$6
+      SET targetcost1=$2, targetcost2=$3, targetcost3=$4, targetcost4=$5, targetcost5=$6
       WHERE _id = $1;`
     let params = [
       board_id,
