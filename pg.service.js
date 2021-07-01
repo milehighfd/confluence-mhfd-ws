@@ -77,7 +77,7 @@ const updateProject = (board_id, project) => {
   client.query('BEGIN', err => {
     if (shouldAbort(err)) return
     const queryText = `
-      UPDATE "boardProjects"
+      UPDATE "board-projects"
       SET position0=$3, position1=$4, position2=$5, position3=$6, position4=$7, position5=$8,
       req1=$9, req2=$10, req3=$11, req4=$12, req5=$13
       WHERE board_id = $1 and project_id = $2;`
