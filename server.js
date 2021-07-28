@@ -1,5 +1,12 @@
 const app = require('express')();
 const http = require('http').Server(app);
+const dotenv = require('dotenv')
+
+dotenv.config();
+
+const db = require('./config/db');
+
+db.sequelize.sync();
 
 const {
   saveColumns,

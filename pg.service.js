@@ -1,57 +1,24 @@
-const dotenv = require('dotenv')
-dotenv.config()
+const db = require('./config/db');
 
-const { Client } = require('pg')
+const Board = db.board;
+const BoardProject = db.boardProject;
 
-const client = new Client({
-  user: process.env.POSTGRESQL_USER,
-  host: process.env.POSTGRESQL_HOST,
-  database: process.env.POSTGRESQL_DB,
-  password: process.env.POSTGRESQL_PASSWORD,
-})
-
-client.connect()
-
-const shouldAbort = err => {
-  if (err) {
-    console.error('Error in transaction', err.stack)
-    client.query('ROLLBACK', err => {
-      if (err) {
-        console.error('Error rolling back client', err.stack)
-      }
-    })
-  }
-  return !!err
-}
-
-const saveReqmanager = (board_id, reqmanager) => {
-  client.query('BEGIN', err => {
-    if (shouldAbort(err)) return
-    const queryText = `
-      UPDATE "boards"
-      SET targetcost1=$2, targetcost2=$3, targetcost3=$4, targetcost4=$5, targetcost5=$6
-      WHERE _id = $1;`
-    let params = [
-      board_id,
-      ...reqmanager
-    ];
-    //console.log('params', params);
-    client.query(queryText, params, (err, res) => {
-      //console.log('res', res)
-      if (shouldAbort(err)) return
-      if (shouldAbort(err)) return
-      client.query('COMMIT', err => {
-        if (err) {
-          console.error('Error committing transaction', err.stack)
-        }
-      })
-    })
-  })
+const saveReqmanager = async (board_id, reqmanager) => {
+  let board = await Board.findOne({
+    where: {
+        _id: board_id
+    }
+  });
+  board.targetcost1 = reqmanager[0];
+  board.targetcost2 = reqmanager[1];
+  board.targetcost3 = reqmanager[2];
+  board.targetcost4 = reqmanager[3];
+  board.targetcost5 = reqmanager[4];
+  board.save({fields: ['targetcost1', 'targetcost2', 'targetcost3', 'targetcost4', 'targetcost5']});
 }
 
 const saveColumns = (board_id, columns) => {
   let map = {};
-
   columns.forEach((column, columnIdx) => {
     column.projects.forEach((project, rowId) => {
       let pid = project.project_id;
@@ -73,53 +40,33 @@ const saveColumns = (board_id, columns) => {
   })
 }
 
-const updateProject = (board_id, project) => {
-  client.query('BEGIN', err => {
-    if (shouldAbort(err)) return
-    const queryText = `
-      UPDATE "board-projects"
-      SET position0=$3, position1=$4, position2=$5, position3=$6, position4=$7, position5=$8,
-      req1=$9, req2=$10, req3=$11, req4=$12, req5=$13
-      WHERE board_id = $1 and project_id = $2;`
-    let params = [
-      board_id, project.project_id,
-      project.position0,
-      project.position1,
-      project.position2,
-      project.position3,
-      project.position4,
-      project.position5,
-      project.req1,
-      project.req2,
-      project.req3,
-      project.req4,
-      project.req5,
-    ];
-    //console.log('params', params);
-    client.query(queryText, [
-      board_id, project.project_id,
-      project.position0,
-      project.position1,
-      project.position2,
-      project.position3,
-      project.position4,
-      project.position5,
-      project.req1,
-      project.req2,
-      project.req3,
-      project.req4,
-      project.req5,
-    ], (err, res) => {
-      //console.log('res', res)
-      if (shouldAbort(err)) return
-      if (shouldAbort(err)) return
-      client.query('COMMIT', err => {
-        if (err) {
-          console.error('Error committing transaction', err.stack)
-        }
-      })
-    })
-  })
+const isUndefOrNull = (val) => {
+  if (val === undefined || val === null) {
+    return null;
+  } else {
+    return val;
+  }
+}
+
+const updateProject = async (board_id, project) => {
+  let boardProjects = await BoardProject.findOne({
+    where: {
+        board_id: board_id,
+        project_id: `${project.project_id}`
+    }
+  });
+  boardProjects.position0 = isUndefOrNull(project.position0);
+  boardProjects.position1 = isUndefOrNull(project.position1);
+  boardProjects.position2 = isUndefOrNull(project.position2);
+  boardProjects.position3 = isUndefOrNull(project.position3);
+  boardProjects.position4 = isUndefOrNull(project.position4);
+  boardProjects.position5 = isUndefOrNull(project.position5);
+  boardProjects.req1 = isUndefOrNull(project.req1);
+  boardProjects.req2 = isUndefOrNull(project.req2);
+  boardProjects.req3 = isUndefOrNull(project.req3);
+  boardProjects.req4 = isUndefOrNull(project.req4);
+  boardProjects.req5 = isUndefOrNull(project.req5);
+  boardProjects.save({fields: ['position0', 'position1', 'position2', 'position3', 'position4', 'position5', 'req1', 'req2', 'req3', 'req4', 'req5']});
 }
 
 module.exports = {
