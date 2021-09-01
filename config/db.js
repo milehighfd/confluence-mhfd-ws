@@ -6,7 +6,14 @@ const sequelize = new Sequelize(
     process.env.POSTGRESQL_PASSWORD,
     {
         host: process.env.POSTGRESQL_HOST,
-        dialect: "postgres",
+        dialect: "mssql",
+        databaseVersion: '10.50.6000',
+        dialectOptions: {
+            instanceName: 'SQLEXPRESS',
+            options:{
+                encrypt: false
+            }
+        },
         pool: {
             max: 5,
             min: 0,
