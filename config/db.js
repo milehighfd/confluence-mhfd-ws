@@ -6,6 +6,7 @@ const sequelize = new Sequelize(
     process.env.POSTGRESQL_PASSWORD,
     {
         host: process.env.POSTGRESQL_HOST,
+        port: process.env.POSTGRESQL_PORT,
         dialect: "mssql",
         databaseVersion: '10.50.6000',
         dialectOptions: {
