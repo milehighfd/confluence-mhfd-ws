@@ -12,6 +12,7 @@
     "express": "^4.17.1",
     "pg": "^8.5.1",
     "sequelize": "^6.6.5",
-    "socket.io": "^4.0.0"
+    "socket.io": "^4.0.0",
+    "tedious": "^12.2.0"
   }
 }
