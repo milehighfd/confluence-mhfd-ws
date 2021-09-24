@@ -57,6 +57,10 @@ workspaces.on('connection', (socket) => {
 
 });
 
+app.get('/echo',(req,res) => {
+	res.send('Alive');
+})
+
 const port = process.env.PORT || '65080';
 
 http.listen(port, () => {

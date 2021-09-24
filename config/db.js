@@ -7,14 +7,15 @@ const sequelize = new Sequelize(
     {
         host: process.env.POSTGRESQL_HOST,
         port: process.env.POSTGRESQL_PORT,
-        dialect: "mssql",
-        databaseVersion: '10.50.6000',
-        dialectOptions: {
-            instanceName: 'SQLEXPRESS',
-            options:{
-                encrypt: false
-            }
-        },
+        dialect: 'mssql',
+     databaseVersion: '10.50.6000',
+   dialectOptions: {
+     instancName: 'XXX',
+    // instanceName: 'SQLEXPRESS',
+     options:{
+       encrypt: false
+     }
+   },
         pool: {
             max: 5,
             min: 0,
@@ -27,6 +28,14 @@ const sequelize = new Sequelize(
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
+
+db.sequelize.authenticate().then(() => {
+	console.log('Connected to Database')
+}) .catch((error) =>{
+console.log('Error'+error)
+})
+
+
 
 db.board = require('../models/board.model.js')(sequelize, Sequelize);
 db.boardProject = require('../models/boardProject.model.js')(sequelize, Sequelize);
