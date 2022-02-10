@@ -38,6 +38,6 @@ console.log('Error'+error)
 
 
 db.board = require('../models/board.model.js')(sequelize, Sequelize);
-db.boardProject = require('../models/boardProject.model.js')(sequelize, Sequelize);
+// db.boardProject = require('../models/boardProject.model.js')(sequelize, Sequelize);
 
 module.exports = db;
