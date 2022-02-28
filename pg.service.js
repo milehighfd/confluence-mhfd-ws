@@ -29,7 +29,9 @@ const saveColumns = (board_id, columns) => {
           req2: project.req2,
           req3: project.req3,
           req4: project.req4,
-          req5: project.req5
+          req5: project.req5,
+          year1: project.year1,
+          year2: project.year2,
         }
       }
       map[pid][`position${columnIdx}`] = rowId;
@@ -66,7 +68,9 @@ const updateProject = async (board_id, project) => {
   boardProjects.req3 = isUndefOrNull(project.req3);
   boardProjects.req4 = isUndefOrNull(project.req4);
   boardProjects.req5 = isUndefOrNull(project.req5);
-  boardProjects.save({fields: ['position0', 'position1', 'position2', 'position3', 'position4', 'position5', 'req1', 'req2', 'req3', 'req4', 'req5']});
+  boardProjects.year1 = isUndefOrNull(project.year1);
+  boardProjects.year2 = isUndefOrNull(project.year2);
+  boardProjects.save({fields: ['position0', 'position1', 'position2', 'position3', 'position4', 'position5', 'req1', 'req2', 'req3', 'req4', 'req5', 'year1', 'year2']});
 }
 
 module.exports = {
